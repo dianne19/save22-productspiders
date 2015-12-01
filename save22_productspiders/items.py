@@ -26,7 +26,8 @@ class Save22ProductspidersItem(scrapy.Item):
     promo_price = scrapy.Field()
     promo_qty = scrapy.Field()
     promo_data = scrapy.Field()
-    
-    
+    promo_expiry = scrapy.Field()
+    current_price = scrapy.Field()
+    brand = scrapy.Field()
     pass
     
