@@ -23,4 +23,8 @@ class WwwExpansysComSgCrawler(CrawlSpider):
   )
   
   def parse_item(self,response):
+    for href in response.css("div#product_listing > div.productGrid > ul.item.c0 > li.image > a::attr('href')"):
+          url = response.urljoin(href.extract())
+          print url
+          yield request
     pass
