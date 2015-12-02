@@ -22,9 +22,26 @@ class WwwExpansysComSgCrawler(CrawlSpider):
     ),
   )
   
-  def parse_item(self,response):
-    for href in response.css("div#product_listing > div.productGrid > ul.item.c0 > li.image > a::attr('href')"):
-          url = response.urljoin(href.extract())
-          print url
-          yield request
-    pass
+      
+def parse(self, response):
+  for href in response.css("div.span2.categorybox-span > div.categorybox.thumbnail.text-center > div.thumb > a::attr('href')"):
+    url = response.urljoin(href.extract())
+    print url
+    request = scrapy.Request(url, callback=self.parse_2)
+    yield request
+
+def parse_2(self, response):
+    for href in response.css("div.FeatueredHeader > h2 > a::attr('href')"):
+    url = response.urljoin(href.extract())
+    request = scrapy.Request(url, callback=self.parse_dir_contents)
+    yield request
+
+
+def parse_dir_contents(self, response):
+    for sel in response.xpath('//div#prod-data-id126641.prod-data'):
+    item = AllforYouItem()
+    item['name'] = sel.xpath('text()').extract()
+    item['title'] = response.xpath = ('//*[id="product"]/*[@id="title"]/h3/text()'.extract()
+    item['link'] = sel.xpath('a/@href').extract()
+    item['desc'] = sel.xpath('Samsung Galaxy Note5 (Dual SIM) SM-N9200/text()').extract()
+    yield item
