@@ -43,5 +43,5 @@ def parse_dir_contents(self, response):
     item['name'] = sel.xpath('text()').extract()
     item['title'] = response.xpath = ('//*[id="product"]/*[@id="title"]/h3/text()'.extract()
     item['link'] = sel.xpath('a/@href').extract()
-    item['desc'] = sel.xpath('Samsung Galaxy Note5 (Dual SIM) SM-N9200/text()').extract()
+    item['desc'] = sel.xpath('text()').extract()
     yield item
