@@ -13,31 +13,30 @@ class ExpansysItem(CrawlSpider):
     ]
     
 rules = (
-        Rule(LinkExtractor(allow=(r'.+sg/\S+\d+/', ), deny=(r'.+/.filter', ))),
-        Rule(LinkExtractor(allow=(r'.+sg/?page.+', )), deny=(r'.+/.filter', )),
+        Rule(LinkExtractor(allow=(r'.+sg/\S+\d+/', ), deny=(r'.+/.filter', )), callback = 'parse_item', follow=true),
+        Rule(LinkExtractor(allow=(r'.+sg/?page.+', ), deny=(r'.+/.filter', )), callback = 'parse_item', follow=true)
     )
     
 
-    def parse_item(self, response):
-        for href in response.css("div#product_listing > div.productGrid > ul.item.c0 > li.image > a::attr('href')"):
-          url = response.urljoin(href.extract())
-          request = scrapy.Request(url, callback=self.parse_dir_contents)
-          yield request      
-
-    def parse_dir_contents(self, response): 
+def parse_item(self, response):
       items = list()
+      sku = list()
+      gamit = response.xpath('//*[@id="product"]')
+      skui = response.xpath('//@data-sku').extract()
 
-          for sel in response.xpath('//*[@id="prod_core"]'):
-            item = Save22ProductspidersItem()
-            
+        if skui in sku:
+          return
+          
+          for a in gamit:
+              item = Save22ProductspidersItem()
+              item['sku'] = skui
               item['Link'] = response.url or None
-              item['Title'] = sel.xpath('@data-name').extract()
-              item['Description'] = sel.xpath('@data-desc').extract()
-              item['Image_Link'] = sel.xpath('@data-imgurl').extract()
-          #    item['Quality'] = sel.xpath('@data-selqty').extract()
-              item['Price'] = sel.xpath('@data-price').extract()
-              item['Old_price'] = sel.xpath('@data-oldprice').extract()
-              item['Offer'] = sel.xpath('@data-outofstock').extract()
+              item['Title'] = a.xpath('@data-name').extract()
+              item['Description'] = a.xpath('@data-desc').extract()
+              item['Image_Link'] = a.xpath('@data-imgurl').extract()
+              item['Quality'] = a.xpath('@data-selqty').extract()
+              item['Price'] = a.xpath('@data-price').extract()
+              item['Old_price'] = a.xpath('@data-oldprice').extract()
+              item['Offer'] = a.xpath('@data-outofstock').extract()
               items.append(item)
               yield item
-             return
